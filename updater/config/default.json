@@ -1,0 +1,14 @@
+{
+    "s3": {
+        "region": "us-west-2",
+        "accessKeyId": "accessKeyId",
+        "secretAccessKey": "secretAccessKey"
+    },
+    "did": {
+        "s3": {
+            "bucket": "omniverselab",
+            "root": "did"
+        },
+        "localDir": "./documents"
+    }
+}
