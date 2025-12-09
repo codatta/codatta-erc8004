@@ -1,0 +1,1 @@
+forge script script/IdentityRegistry.s.sol:IdentityRegistryScript --rpc-url kite_test --broadcast
