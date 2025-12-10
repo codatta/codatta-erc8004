@@ -31,15 +31,19 @@ export function DidDocumentViewer() {
     setDidDocument(null);
 
     try {
-      // Example: Fetch from a DID resolver service
-      // You should replace this URL with your actual DID service endpoint
-      const serviceUrl = process.env.NEXT_PUBLIC_DID_SERVICE_URL || 'https://dev.uniresolver.io/1.0/identifiers';
-      const response = await axios.get(`${serviceUrl}/${encodeURIComponent(didId)}`);
+      // Fetch from our resolver service
+      const resolverUrl = process.env.NEXT_PUBLIC_RESOLVER_URL || 'http://localhost:3002';
+      const response = await axios.get(`${resolverUrl}/resolve/${encodeURIComponent(didId)}`);
       
-      setDidDocument(response.data);
+      // The resolver returns { success: true, didDocument: {...} }
+      if (response.data.success && response.data.didDocument) {
+        setDidDocument(response.data.didDocument);
+      } else {
+        setError('Invalid response from resolver service');
+      }
     } catch (err: any) {
       if (err.response?.status === 404) {
-        setError('DID not found');
+        setError('DID document not found');
       } else {
         setError(err.message || 'Failed to fetch DID document');
       }
@@ -105,7 +109,7 @@ export function DidDocumentViewer() {
 
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
         <p className="text-xs text-blue-700 dark:text-blue-400">
-          💡 Configure the DID service URL in your .env file (NEXT_PUBLIC_DID_SERVICE_URL)
+          💡 Make sure the resolver service is running on port 3002 (or configure NEXT_PUBLIC_RESOLVER_URL)
         </p>
       </div>
     </div>

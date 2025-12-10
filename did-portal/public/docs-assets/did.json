@@ -1,0 +1,73 @@
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "id": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1",
+  "controller": "did:example:controller-789",
+  "verificationMethod": [
+    {
+      "id": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#keys-1",
+      "type": "Ed25519VerificationKey2018",
+      "controller": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1",
+      "publicKeyMultibase": "z6MkhY...EXAMPLE_ED25519_PUBLIC_KEY...Yw"
+    },
+    {
+      "id": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#keys-2",
+      "type": "JsonWebKey2020",
+      "controller": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1",
+      "publicKeyJwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "f83OJ3D2xF4EXAMPLE_X",
+        "y": "x_FEzRu9EXAMPLE_Y"
+      }
+    },
+    {
+      "id": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#key-agreement-1",
+      "type": "X25519KeyAgreementKey2019",
+      "controller": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1",
+      "publicKeyMultibase": "z6LS...EXAMPLE_X25519_PUBLIC_KEY...Z2"
+    }
+  ],
+  "authentication": [
+    "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#keys-1",
+    {
+      "id": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#auth-jwt",
+      "type": "JsonWebSignature2020",
+      "controller": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1",
+      "publicKeyJwk": {
+        "kty": "RSA",
+        "n": "0vx7agoebGc...EXAMPLE_N",
+        "e": "AQAB"
+      }
+    }
+  ],
+  "assertionMethod": [
+    "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#keys-1"
+  ],
+  "capabilityInvocation": [
+    "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#keys-1"
+  ],
+  "capabilityDelegation": [
+    "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#keys-2"
+  ],
+  "keyAgreement": [
+    "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#key-agreement-1"
+  ],
+  "service": [
+    {
+      "id": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#linked-domain",
+      "type": "LinkedDomains",
+      "serviceEndpoint": "https://example.com"
+    },
+    {
+      "id": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1#did-communication",
+      "type": "DIDCommMessaging",
+      "serviceEndpoint": "https://agent.example.com/messages/123",
+      "description": "DIDComm v2 messaging endpoint"
+    }
+  ],
+  "alsoKnownAs": [
+    "https://user.example.com/alice"
+  ],
+  "created": "2025-11-27T00:00:00Z",
+  "updated": "2025-11-27T00:00:00Z"
+}

@@ -26,7 +26,6 @@ yarn-error.log*
 
 # local env files
 .env*.local
-.env
 
 # vercel
 .vercel
@@ -35,4 +34,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-
+# Keep documentation assets
+!public/docs-assets/
+.env

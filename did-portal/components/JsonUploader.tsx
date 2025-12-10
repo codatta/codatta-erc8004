@@ -86,8 +86,8 @@ export function JsonUploader() {
 
     try {
       // Build URL: /document/:id
-      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || '/api';
-      const url = `${baseUrl}/document/${encodeURIComponent(documentId)}`;
+      const updaterUrl = process.env.NEXT_PUBLIC_UPDATER_URL || 'http://localhost:3001';
+      const url = `${updaterUrl}/document/${encodeURIComponent(documentId)}`;
       
       console.log('📤 Uploading document:', {
         url,
