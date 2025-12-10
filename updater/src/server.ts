@@ -6,7 +6,7 @@ import config from "config";
 import {DID} from "./did";
 
 const app = express();
-const PORT = 3001;
+const PORT = config.get("server.port") || 3001;
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     res.header('Access-Control-Allow-Origin', '*');

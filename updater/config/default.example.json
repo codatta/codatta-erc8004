@@ -10,5 +10,8 @@
             "root": "did"
         },
         "localDir": "./documents"
+    },
+    "server": {
+        "port": 3001
     }
 }
