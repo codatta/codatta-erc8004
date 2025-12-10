@@ -1,51 +1,146 @@
 # ERC-8004 × Codatta: Reconstruction
-A repository implementing the Reconstruction of Codatta DID using `ERC-8004`.
 
-## Structure
+Reconstruction of Codatta DID using ERC-8004 standard, enabling secure agent registration, document management, and identity verification.
 
-- contracts: - contracts: Solidity contracts implementing Codatta DID in the form of `ERC-8004`, including identity registry, reputation registry, validation registry.
-- updater: A service for uploading did documents onto storage service, including S3, decentralized storage.
-- tool: Frontend for interacting with the did system.
+## 🚀 Try it Now
 
-## Functions
-1. Register the agent/DID (via the command-line tool)
-2. Modify the DID document
-3. Retrieve the document through the browser (the resolver hasn’t been developed yet, so it’s fetched directly from S3)
+**Live Demo**: [Coming Soon]  
+**Local Setup**: See [Quick Start](#quick-start-recommended) below
+
+## 📖 User Guide
+
+**New to DID Portal?** Check out the complete user guide: [did-portal/USAGE.md](./did-portal/USAGE.md)
+
+---
+
+## ✨ Features
+
+- 🔐 **Blockchain-based Identity** - Secure agent registration on ERC-8004 smart contracts
+- 📄 **Document Management** - Upload and store DID documents with automatic validation
+- 🔍 **Identity Resolution** - Fast and reliable DID document querying
+- 💼 **Wallet Integration** - Support for MetaMask and major EVM wallets
+- ⚡ **Real-time Updates** - Instant feedback on transactions and operations
+- 🌐 **Multi-chain Support** - Compatible with various EVM networks
+
+## 📦 Project Structure
+
+| Directory | Description |
+|-----------|-------------|
+| **contracts/** | Solidity smart contracts (ERC-8004 implementation) |
+| **updater/** | Backend service for uploading DID documents to storage |
+| **resolver/** | Backend service for resolving DID documents from storage |
+| **did-portal/** | Web portal (Next.js frontend) |
+
+## Setup
+
+### Prerequisites
+- Node.js 18+
+- Storage backend configured (see Configuration section)
+- EVM-compatible wallet (MetaMask, etc.)
+
+### Step 1: Configuration
+
+#### 1.1 Deploy Smart Contracts (optional if using existing deployment)
+
+For contract deployment instructions, see [contracts/README.md](./contracts/README.md).
+
+#### 1.2 Configure Contract Settings
+
+After deployment, update the contract configuration in DID Portal:
+- **File**: `did-portal/lib/contract-config.ts`
+  - Update `CONTRACT_ADDRESS` with your deployed contract address
+  - Update `CONTRACT_CHAIN_ID` with your target network ID
+- **File**: `did-portal/lib/wagmi.ts`
+  - Configure supported networks and RPC endpoints
+
+#### 1.3 Configure AWS S3
+
+Set up S3 credentials for both updater and resolver services:
+
+```bash
+# Updater service
+cp updater/config/default.example.json updater/config/default.json
+# Edit updater/config/default.json with your AWS credentials
+
+# Resolver service
+cp resolver/config/default.example.json resolver/config/default.json
+# Edit resolver/config/default.json with your AWS credentials
+```
+
+#### 1.4 Configure Service Ports (Optional)
+
+All services use configurable ports:
+- **Updater**: Edit `updater/config/default.json` → `server.port`
+- **Resolver**: Edit `resolver/config/default.json` → `server.port`
+- **DID Portal**: Set `PORT` environment variable
+
+### Step 2: Launch Services
+
+#### Quick Start (Recommended)
+
+Start all services with one command:
+```bash
+./start-services.sh
+```
+
+Verify all services are running:
+```bash
+./test-services.sh
+```
+
+To stop all services:
+```bash
+./stop-services.sh
+```
+
+#### Manual Start (Alternative)
+
+If you prefer to start services individually:
+
+```bash
+# Start updater service
+cd updater
+npm install
+npm run dev
+
+# Start resolver service
+cd resolver
+npm install
+npm run dev
+
+# Start DID Portal
+cd did-portal
+npm install
+npm run dev
+```
 
 ## Usage
 
-Open [Codatta DID Tooken](http://localhost:3000)
+After starting all services, open the DID Portal in your browser.
 
-### Register
+For detailed usage instructions with screenshots and step-by-step guides, see:
+📖 **[User Guide](./did-portal/USAGE.md)**
 
-- Click `Register Agent`
+### Quick Overview
 
-![alt text](./assets/register.png)
+1. **Register Agent** - Create a new DID identity on the blockchain
+2. **Upload DID Document** - Store your identity information
+3. **Query DID Document** - Retrieve and verify DID information
 
-- Confirm transaction in popup window
+## 🤝 Contributing
 
-![alt text](./assets/confirm.png)
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-- Wait for transaction receipt
+## 📄 License
 
-![alt text](./assets/receipt.png)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-`1` is the agent id stored in contracts
+## 🔗 Links
 
-`2` is the did related to agent id
+- **Documentation**: [User Guide](./did-portal/USAGE.md)
+- **ERC-8004 Standard**: https://eips.ethereum.org/EIPS/eip-8004
+- **DID Specification**: https://www.w3.org/TR/did-core/
 
-### Update DID Document
+---
 
-- Prepare DID Document
-
-You can refer to the [DID Document file](./assets/did.json), remember to change the `id` with your did.
-
-- Upload DID Document
-
-![alt text](./assets/upload.png)
-
-Till now, you have completed creating a ERC8004-version Codatta DID. Next, you can repeat [Update DID Document](#Update-DID-Document) to update the DID Document, or follow the tutorial bellow to query the DID Document of a did.
-
-## Query DID Document
-
-- updater: A tool used to interact with the system, including user registration and the management of user information.
+**Built with** ❤️ **using ERC-8004**

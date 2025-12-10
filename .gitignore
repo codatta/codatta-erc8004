@@ -1,0 +1,11 @@
+logs/
+*.log
+*.pid
+node_modules/
+.DS_Store
+.env.local
+.next/
+
+# Keep changelog
+!.CHANGELOG.md
+
