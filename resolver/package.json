@@ -1,0 +1,31 @@
+{
+  "name": "resolver",
+  "version": "1.0.0",
+  "description": "DID Document Resolver Service - Resolves DID documents from storage",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "did",
+    "resolver",
+    "decentralized-identity"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.940.0",
+    "@types/config": "^3.3.4",
+    "@types/express": "^5.0.5",
+    "config": "^3.3.12",
+    "express": "^5.1.0",
+    "typescript": "^5.5.2"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
+  }
+}
+

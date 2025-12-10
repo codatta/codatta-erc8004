@@ -1,0 +1,17 @@
+{
+  "s3": {
+    "region": "us-west-2",
+    "accessKeyId": "your-access-key-id",
+    "secretAccessKey": "your-secret-access-key"
+  },
+  "did": {
+    "s3": {
+      "bucket": "your-bucket-name",
+      "root": "did"
+    }
+  },
+  "server": {
+    "port": 3002
+  }
+}
+
