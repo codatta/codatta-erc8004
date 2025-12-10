@@ -51,6 +51,9 @@ fi
 echo -e "${GREEN}✓ Configuration files found${NC}"
 echo ""
 
+# Create logs directory
+mkdir -p logs
+
 # Start Updater Service
 echo "1️⃣  Starting Updater Service (port 3001)..."
 cd updater
@@ -105,7 +108,6 @@ echo "Or kill processes manually: kill $UPDATER_PID $RESOLVER_PID $PORTAL_PID"
 echo ""
 
 # Save PIDs to file for easy stopping
-mkdir -p logs
 echo "$UPDATER_PID" > logs/updater.pid
 echo "$RESOLVER_PID" > logs/resolver.pid
 echo "$PORTAL_PID" > logs/portal.pid
