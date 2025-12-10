@@ -117,32 +117,13 @@ export const CONTRACT_CHAIN_ID = 2368; // Your network chain ID
 
 The project includes pre-configured support for KiteAI Testnet (Chain ID: 2368). You can modify network settings in `lib/wagmi.ts`.
 
-### Running the Development Server
+## Development
 
-**Important**: Start all required services in order:
+### Running
 
-1. **Start the updater service** (in `../updater/` directory):
-   ```bash
-   cd ../updater
-   npm run dev
-   ```
+See the main [README](../README.md) for instructions on starting all services.
 
-2. **Start the resolver service** (in `../resolver/` directory):
-   ```bash
-   cd ../resolver
-   npm run dev
-   ```
-
-3. **Start the portal** (in the `did-portal/` directory):
-   ```bash
-   npm run dev
-   ```
-
-Open the portal in your browser.
-
-**Note**: The updater and resolver services must be running for the portal's upload and query features to work.
-
-## Building for Production
+### Building for Production
 
 ```bash
 npm run build
