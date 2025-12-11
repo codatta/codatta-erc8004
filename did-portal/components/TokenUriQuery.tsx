@@ -84,7 +84,32 @@ export function TokenUriQuery() {
             </h4>
             <button
               onClick={() => {
-                navigator.clipboard.writeText(readTokenUri as string);
+                const text = readTokenUri as string;
+                if (navigator.clipboard && window.isSecureContext) {
+                  navigator.clipboard.writeText(text).then(() => {
+                    alert('Copied to clipboard!');
+                  }).catch(() => {
+                    fallbackCopy(text);
+                  });
+                } else {
+                  fallbackCopy(text);
+                }
+                
+                function fallbackCopy(text: string) {
+                  const textArea = document.createElement("textarea");
+                  textArea.value = text;
+                  textArea.style.position = "fixed";
+                  textArea.style.left = "-999999px";
+                  document.body.appendChild(textArea);
+                  textArea.select();
+                  try {
+                    document.execCommand('copy');
+                    alert('Copied to clipboard!');
+                  } catch (err) {
+                    alert('Copy failed. Please copy manually.');
+                  }
+                  document.body.removeChild(textArea);
+                }
               }}
               className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
             >

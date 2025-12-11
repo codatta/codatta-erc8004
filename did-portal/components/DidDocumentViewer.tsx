@@ -91,7 +91,32 @@ export function DidDocumentViewer() {
             </h4>
             <button
               onClick={() => {
-                navigator.clipboard.writeText(JSON.stringify(didDocument, null, 2));
+                const text = JSON.stringify(didDocument, null, 2);
+                if (navigator.clipboard && window.isSecureContext) {
+                  navigator.clipboard.writeText(text).then(() => {
+                    alert('Copied to clipboard!');
+                  }).catch(() => {
+                    fallbackCopy(text);
+                  });
+                } else {
+                  fallbackCopy(text);
+                }
+                
+                function fallbackCopy(text: string) {
+                  const textArea = document.createElement("textarea");
+                  textArea.value = text;
+                  textArea.style.position = "fixed";
+                  textArea.style.left = "-999999px";
+                  document.body.appendChild(textArea);
+                  textArea.select();
+                  try {
+                    document.execCommand('copy');
+                    alert('Copied to clipboard!');
+                  } catch (err) {
+                    alert('Copy failed. Please copy manually.');
+                  }
+                  document.body.removeChild(textArea);
+                }
               }}
               className="text-xs text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium"
             >
