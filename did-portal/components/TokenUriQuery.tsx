@@ -71,7 +71,7 @@ export function TokenUriQuery() {
             {readError.message}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-            💡 Tip: Query fails if Token ID doesn't exist or is not registered
+            💡 Tip: Query fails if Token ID doesn&apos;t exist or is not registered
           </p>
         </div>
       )}

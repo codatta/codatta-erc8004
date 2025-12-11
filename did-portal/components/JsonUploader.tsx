@@ -202,7 +202,7 @@ export function JsonUploader() {
               </div>
             )}
             <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 space-y-1">
-              <p>💡 DID will be automatically extracted from the "id" field in the JSON file</p>
+              <p>💡 DID will be automatically extracted from the &quot;id&quot; field in the JSON file</p>
               <p className="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
                 Format: did:codatta:&lt;UUID-v4&gt;
               </p>
