@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # DID Ecosystem Services Startup Script
-# This script starts all three services in the background
+# This script builds and starts all three services in production mode
 
-echo "🚀 Starting DID Ecosystem Services..."
+echo "🚀 Starting DID Ecosystem Services (Production Mode)..."
 echo ""
 
 # Colors for output
@@ -61,7 +61,10 @@ if [ ! -d "node_modules" ]; then
     echo "   Installing dependencies..."
     npm install
 fi
-npm run dev > ../logs/updater.log 2>&1 &
+echo "   Building..."
+npm run build > ../logs/updater-build.log 2>&1
+echo "   Starting in production mode..."
+npm run start > ../logs/updater.log 2>&1 &
 UPDATER_PID=$!
 cd ..
 echo -e "${GREEN}   ✓ Updater started (PID: $UPDATER_PID)${NC}"
@@ -74,7 +77,10 @@ if [ ! -d "node_modules" ]; then
     echo "   Installing dependencies..."
     npm install
 fi
-npm run dev > ../logs/resolver.log 2>&1 &
+echo "   Building..."
+npm run build > ../logs/resolver-build.log 2>&1
+echo "   Starting in production mode..."
+npm run start > ../logs/resolver.log 2>&1 &
 RESOLVER_PID=$!
 cd ..
 echo -e "${GREEN}   ✓ Resolver started (PID: $RESOLVER_PID)${NC}"
@@ -87,21 +93,28 @@ if [ ! -d "node_modules" ]; then
     echo "   Installing dependencies..."
     npm install
 fi
-npm run dev > ../logs/portal.log 2>&1 &
+echo "   Building..."
+npm run build > ../logs/portal-build.log 2>&1
+echo "   Starting in production mode..."
+npm run start > ../logs/portal.log 2>&1 &
 PORTAL_PID=$!
 cd ..
 echo -e "${GREEN}   ✓ DID Portal started (PID: $PORTAL_PID)${NC}"
 sleep 3
 
 echo ""
-echo -e "${GREEN}✅ All services started successfully!${NC}"
+echo -e "${GREEN}✅ All services started successfully! (Production Mode)${NC}"
 echo ""
 echo "📊 Service Status:"
 echo "   • Updater:    http://localhost:3001 (PID: $UPDATER_PID)"
 echo "   • Resolver:   http://localhost:3002 (PID: $RESOLVER_PID)"
 echo "   • DID Portal: http://localhost:3000 (PID: $PORTAL_PID)"
 echo ""
-echo "📁 Logs are available in the logs/ directory"
+echo "📁 Logs:"
+echo "   • Build logs:   logs/*-build.log"
+echo "   • Runtime logs: logs/updater.log, logs/resolver.log, logs/portal.log"
+echo ""
+echo "💡 Running in production mode for better performance"
 echo ""
 echo "To stop all services, run: ./stop-services.sh"
 echo "Or kill processes manually: kill $UPDATER_PID $RESOLVER_PID $PORTAL_PID"
