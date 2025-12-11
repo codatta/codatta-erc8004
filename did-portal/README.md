@@ -79,25 +79,31 @@ npm install
 
 #### 1. Environment Variables
 
+**For Local Development:**
+
 Create a `.env.local` file:
 
 ```bash
-cp .env.example .env.local
+cp .env.local.example .env.local
 ```
 
 Configure the following variables in `.env.local`:
 
 ```env
-# Port (optional, default: 3000)
-PORT=3000
-
-# WalletConnect Project ID (required)
-NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id_here
-
-# Backend Service URLs
+# Backend Service URLs (for local development)
 NEXT_PUBLIC_RESOLVER_URL=http://localhost:3002
 NEXT_PUBLIC_UPDATER_URL=http://localhost:3001
+
+# WalletConnect Project ID (required for wallet connection)
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id_here
+
+# Port (optional, default: 3000)
+PORT=3000
 ```
+
+**For Production Deployment:**
+
+The deployment script automatically generates `.env.production` with correct server URLs. You can also manually create it from `.env.production.example` if needed.
 
 #### 2. WalletConnect Setup
 

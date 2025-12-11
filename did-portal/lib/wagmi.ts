@@ -39,7 +39,7 @@ export const kiteAITestnet = defineChain({
 export const config = getDefaultConfig({
   appName: 'Codatta Tool',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID',
-  chains: [mainnet, polygon, optimism, arbitrum, base, sepolia, kiteAITestnet],
+  chains: [kiteAITestnet, mainnet, polygon, optimism, arbitrum, base, sepolia], // kiteAITestnet as default
   ssr: true,
 });
 
