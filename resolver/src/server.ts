@@ -77,8 +77,9 @@ app.get("/health", (req: Request, res: Response) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`DID Resolver service running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`DID Resolver service running on http://0.0.0.0:${PORT}`);
+  console.log(`Accessible from network on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log(`Resolve DID: http://localhost:${PORT}/resolve/:did`);
 });
