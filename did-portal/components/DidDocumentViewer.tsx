@@ -132,11 +132,6 @@ export function DidDocumentViewer() {
         </div>
       )}
 
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-        <p className="text-xs text-blue-700 dark:text-blue-400">
-          💡 Make sure the resolver service is running on port 3002 (or configure NEXT_PUBLIC_RESOLVER_URL)
-        </p>
-      </div>
     </div>
   );
 }

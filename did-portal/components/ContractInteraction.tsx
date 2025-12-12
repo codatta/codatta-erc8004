@@ -361,12 +361,6 @@ export function ContractInteraction() {
         </button>
       )}
 
-      {/* Contract Config Info */}
-      <div className="bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3">
-        <p className="text-xs text-gray-600 dark:text-gray-400">
-          💡 Tip: Edit <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">lib/contract-config.ts</code> to change contract address
-        </p>
-      </div>
     </div>
   );
 }
