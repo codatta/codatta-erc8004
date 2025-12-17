@@ -3,10 +3,10 @@
 
 import { parseAbi } from 'viem';
 
-export const CONTRACT_ADDRESS = '0x740aA385eF5D72ee6BCedF38FFFa5990F21fbBc5'; // 请替换为你的实际合约地址
+// Identity Registry (ERC-8004)
+export const CONTRACT_ADDRESS = '0x740aA385eF5D72ee6BCedF38FFFa5990F21fbBc5';
 export const CONTRACT_CHAIN_ID = 2368; // KiteAI Testnet Chain ID
 
-// 方案1: 使用 parseAbi (推荐，更简洁且不易出错)
 export const CONTRACT_ABI = parseAbi([
   'function register() external returns (uint256 agentId)',
   'function setAgentUri(uint256 agentId, string calldata newUri) external',
@@ -14,33 +14,13 @@ export const CONTRACT_ABI = parseAbi([
   'event Registered(uint256 indexed agentId, string tokenURI, address indexed owner)',
 ]);
 
-// 方案2: 完整的 JSON ABI (如果方案1有问题，取消注释使用这个)
-// export const CONTRACT_ABI = [
-//   {
-//     type: 'function',
-//     name: 'register',
-//     stateMutability: 'nonpayable',
-//     inputs: [],
-//     outputs: [{ name: 'agentId', type: 'uint256', internalType: 'uint256' }],
-//   },
-//   {
-//     type: 'function',
-//     name: 'setAgentUri',
-//     stateMutability: 'nonpayable',
-//     inputs: [
-//       { name: 'agentId', type: 'uint256', internalType: 'uint256' },
-//       { name: 'newUri', type: 'string', internalType: 'string' }
-//     ],
-//     outputs: [],
-//   },
-//   {
-//     type: 'function',
-//     name: 'tokenURI',
-//     stateMutability: 'view',
-//     inputs: [{ name: 'tokenId', type: 'uint256', internalType: 'uint256' }],
-//     outputs: [{ name: '', type: 'string', internalType: 'string' }],
-//   },
-// ] as const;
+// Reputation Registry
+export const REPUTATION_CONTRACT_ADDRESS = '0x1cb3dE12d2bb014f3eb411E68CEb44A4293fba17'; // 请替换为实际地址
+export const REPUTATION_ABI = parseAbi([
+  'function giveFeedback(uint256 agentId, uint8 score, bytes32 tag1, bytes32 tag2, string calldata feedbackUri, bytes32 feedbackHash, bytes calldata feedbackAuth) external',
+  'function getScore(uint256 agentId) external view returns (uint256)',
+  'event NewFeedback(uint256 indexed agentId, address indexed clientAddress, uint8 score, bytes32 indexed tag1, bytes32 tag2, string feedbackUri, bytes32 feedbackHash)',
+]);
 
 // 为了保持向后兼容，也导出 REGISTER_ABI
 export const REGISTER_ABI = CONTRACT_ABI;
