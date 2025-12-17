@@ -80,6 +80,9 @@ contract ReputationRegistry {
     mapping(uint256 => address[]) private _clients;
     mapping(uint256 => mapping(address => bool)) private _clientExists;
 
+    // agentId => score
+    mapping(uint256 => uint256) private _scores;
+
     constructor(address _identityRegistry) {
         require(_identityRegistry != address(0), "bad identity");
         IDENTITY_REGISTRY = _identityRegistry;
@@ -137,6 +140,9 @@ contract ReputationRegistry {
             _clients[agentId].push(msg.sender);
             _clientExists[agentId][msg.sender] = true;
         }
+
+        // Update score
+        _scores[agentId] = score;
 
         emit NewFeedback(agentId, msg.sender, score, tag1, tag2, feedbackUri, feedbackHash);
     }
@@ -412,5 +418,9 @@ contract ReputationRegistry {
         } catch {
             return false;
         }
+    }
+
+    function getScore(uint256 agentId) external view returns (uint256) {
+        return _scores[agentId];
     }
 }
