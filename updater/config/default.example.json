@@ -11,6 +11,13 @@
         },
         "localDir": "./documents"
     },
+    "agent": {
+        "s3": {
+            "bucket": "bucket",
+            "root": "agent"
+        },
+        "localDir": "./agents"
+    },
     "server": {
         "port": 3001
     }

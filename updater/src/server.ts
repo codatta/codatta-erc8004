@@ -6,7 +6,7 @@ import config from "config";
 import {DID} from "./did";
 
 const app = express();
-const PORT = config.get("server.port") || 3001;
+const PORT = (config.get("server.port") as number) || 3001;
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -27,12 +27,18 @@ interface DIDDocument {
   [key: string]: any;
 }
 
-// PUT /upload: receive DID Document JSON
+interface AgentDocument {
+  type: string;
+  name: string;  // DID format
+  [key: string]: any;
+}
+
+// PUT /document/:id - receive DID Document JSON
 app.put("/document/:id", async (req: Request, res: Response) => {
   const did = req.params.id;
   const body = req.body;
 
-  console.log('body', body)
+  console.log('[DID] Uploading document:', did);
 
   // validate
   if (!body || typeof body !== "object") {
@@ -45,21 +51,61 @@ app.put("/document/:id", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "DID Document must contain an `id` field" });
   }
 
-  // save
+  // save locally
   if (!fs.existsSync(config.get("did.localDir"))) {
     fs.mkdirSync(config.get("did.localDir"), { recursive: true });
   }
 
-  // file name, did:example:123.json
   const savePath = path.join(config.get("did.localDir"), `${did}.json`);
-
   fs.writeFileSync(savePath, JSON.stringify(doc, null, 2));
   
+  // push to S3
   await DID.getInstance().pushDidDocument(did);
 
   return res.json({
     success: true,
     message: "DID Document uploaded",
+    file: savePath,
+  });
+});
+
+// PUT /agent/:id - receive Agent Document JSON
+app.put("/agent/:id", async (req: Request, res: Response) => {
+  const did = req.params.id;
+  const body = req.body;
+
+  console.log('[Agent] Uploading document:', did);
+
+  // validate
+  if (!body || typeof body !== "object") {
+    return res.status(400).json({ error: "Invalid JSON" });
+  }
+
+  const doc = body as AgentDocument;
+
+  if (!doc.name) {
+    return res.status(400).json({ error: "Agent Document must contain a `name` field" });
+  }
+
+  // validate name is DID format
+  if (!doc.name.startsWith('did:')) {
+    return res.status(400).json({ error: "Agent Document `name` field must be in DID format" });
+  }
+
+  // save locally
+  if (!fs.existsSync(config.get("agent.localDir"))) {
+    fs.mkdirSync(config.get("agent.localDir"), { recursive: true });
+  }
+
+  const savePath = path.join(config.get("agent.localDir"), `${did}.json`);
+  fs.writeFileSync(savePath, JSON.stringify(doc, null, 2));
+  
+  // push to S3 (using agent config)
+  await DID.getInstance().pushAgentDocument(did);
+
+  return res.json({
+    success: true,
+    message: "Agent Document uploaded",
     file: savePath,
   });
 });

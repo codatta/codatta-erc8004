@@ -20,18 +20,38 @@ export class DID {
   }
 
   async pushDidDocument(did: string) {
-    // filepath：<uint128>.json
+    // filepath：<did>.json
     const filePath = path.join(config.get("did.localDir"), `${did}.json`);
     const s3Key = path.join(config.get("did.s3.root"), `${did}.json`);
 
-    // step 3: read file
+    // read file
     if (!fs.existsSync(filePath)) {
-        console.log(`file not exist: ${filePath}`);
+        console.log(`[DID] file not exist: ${filePath}`);
         return;
     }
     const data = fs.readFileSync(filePath, "utf8");
 
-    // step 4: upload to S3
+    // upload to S3
+    console.log(`[DID] Uploading to S3: ${s3Key}`);
     await S3.getInstance().uploadToS3(config.get("did.s3.bucket"), s3Key, data);
+    console.log(`[DID] Upload complete: ${s3Key}`);
+  }
+
+  async pushAgentDocument(did: string) {
+    // filepath：<did>.json
+    const filePath = path.join(config.get("agent.localDir"), `${did}.json`);
+    const s3Key = path.join(config.get("agent.s3.root"), `${did}.json`);
+
+    // read file
+    if (!fs.existsSync(filePath)) {
+        console.log(`[Agent] file not exist: ${filePath}`);
+        return;
+    }
+    const data = fs.readFileSync(filePath, "utf8");
+
+    // upload to S3
+    console.log(`[Agent] Uploading to S3: ${s3Key}`);
+    await S3.getInstance().uploadToS3(config.get("agent.s3.bucket"), s3Key, data);
+    console.log(`[Agent] Upload complete: ${s3Key}`);
   }
 }
