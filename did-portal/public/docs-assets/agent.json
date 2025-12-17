@@ -1,0 +1,49 @@
+{
+    "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+    "name": "did:codatta:2c0798fb-462b-4042-92e2-30db0d7c1dc1",
+    "description": "A natural language description of the Agent, which MAY include what it does, how it works, pricing, and interaction methods",
+    "image": "https://example.com/agentimage.png",
+    "endpoints": [
+      {
+        "name": "A2A",
+        "endpoint": "https://agent.example/.well-known/agent-card.json",
+        "version": "0.3.0"
+      },
+      {
+        "name": "MCP",
+        "endpoint": "https://mcp.agent.eth/",
+        "capabilities": {},
+        "version": "2025-06-18"
+      },
+      {
+        "name": "OASF",
+        "endpoint": "ipfs://{cid}",
+        "version": "0.7"
+      },
+      {
+        "name": "ENS",
+        "endpoint": "vitalik.eth",
+        "version": "v1"
+      },
+      {
+        "name": "DID",
+        "endpoint": "did:method:foobar",
+        "version": "v1"
+      },
+      {
+        "name": "agentWallet",
+        "endpoint": "eip155:1:0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7"
+      }
+    ],
+    "registrations": [
+      {
+        "agentId": 22,
+        "agentRegistry": "eip155:1:0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7"
+      }
+    ],
+    "supportedTrust": [
+      "reputation",
+      "crypto-economic",
+      "tee-attestation"
+    ]
+  }

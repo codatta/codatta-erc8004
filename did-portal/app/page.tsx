@@ -4,6 +4,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { JsonUploader } from '@/components/JsonUploader';
 import { ContractInteraction } from '@/components/ContractInteraction';
 import { DidDocumentViewer } from '@/components/DidDocumentViewer';
+import { AgentDocumentViewer } from '@/components/AgentDocumentViewer';
 import { TokenUriQuery } from '@/components/TokenUriQuery';
 
 export default function Home() {
@@ -111,6 +112,34 @@ export default function Home() {
                   Fetch DID document from server
                 </p>
                 <DidDocumentViewer />
+              </div>
+
+              {/* Query Agent Document */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Query Agent Document
+                  </h2>
+                </div>
+                <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">
+                  Fetch Agent document from server
+                </p>
+                <AgentDocumentViewer />
               </div>
 
               {/* Query Token URI */}
