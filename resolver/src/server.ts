@@ -3,7 +3,7 @@ import config from "config";
 import { Resolver } from "./resolver";
 
 const app = express();
-const PORT = config.get("server.port") || 3002;
+const PORT = (config.get("server.port") as number) || 3002;
 
 // CORS middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
