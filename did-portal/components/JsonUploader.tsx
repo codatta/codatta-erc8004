@@ -267,7 +267,7 @@ export function JsonUploader() {
                     : 'Drag & drop DID document or click to browse'}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  JSON file with "id" field
+                  JSON file with &quot;id&quot; field
                 </p>
               </div>
             )}
@@ -322,7 +322,7 @@ export function JsonUploader() {
                     : 'Drag & drop Agent document or click to browse'}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  JSON file with "name" field (must match DID document id)
+                  JSON file with &quot;name&quot; field (must match DID document id)
                 </p>
               </div>
             )}
