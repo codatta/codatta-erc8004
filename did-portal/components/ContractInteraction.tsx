@@ -185,16 +185,6 @@ export function ContractInteraction() {
         </>
       )}
 
-      {/* Contract Info */}
-      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-        <p className="text-xs text-gray-600 dark:text-gray-400">
-          <span className="font-medium">Contract:</span> {CONTRACT_ADDRESS}
-        </p>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-          <span className="font-medium">Network:</span> KiteAI Testnet (Chain ID: {CONTRACT_CHAIN_ID})
-        </p>
-      </div>
-
       {/* Register Agent */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">

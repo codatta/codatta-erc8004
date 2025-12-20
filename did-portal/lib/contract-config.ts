@@ -11,6 +11,8 @@ export const CONTRACT_ABI = parseAbi([
   'function register() external returns (uint256 agentId)',
   'function setAgentUri(uint256 agentId, string calldata newUri) external',
   'function tokenURI(uint256 tokenId) public view returns (string memory)',
+  'function setMetadata(uint256 agentId, string memory key, bytes memory value) external',
+  'function getMetadata(uint256 agentId, string memory key) external view returns (bytes memory)',
   'event Registered(uint256 indexed agentId, string tokenURI, address indexed owner)',
 ]);
 
