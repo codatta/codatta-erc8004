@@ -6,6 +6,7 @@ import { CONTRACT_ADDRESS, CONTRACT_CHAIN_ID } from '@/lib/contract-config';
 import { JsonUploader } from '@/components/JsonUploader';
 import { ContractInteraction } from '@/components/ContractInteraction';
 import { SetAgentUri } from '@/components/SetAgentUri';
+import { TemplateDownloader } from '@/components/TemplateDownloader';
 import { DidDocumentViewer } from '@/components/DidDocumentViewer';
 import { AgentDocumentViewer } from '@/components/AgentDocumentViewer';
 import { TokenUriQuery } from '@/components/TokenUriQuery';
@@ -216,7 +217,10 @@ export default function Home() {
                 <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">
                   Upload DID and Agent JSON files
                 </p>
-                <JsonUploader />
+                <div className="space-y-4">
+                  <TemplateDownloader />
+                  <JsonUploader />
+                </div>
               </div>
             </div>
 
