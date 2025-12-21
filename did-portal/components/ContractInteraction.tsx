@@ -9,16 +9,11 @@ import { decodeEventLog } from 'viem';
 export function ContractInteraction() {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
-  const [tokenUri, setTokenUri] = useState('');
   const [error, setError] = useState<string | null>(null);
   
   // Registration result
   const [registeredAgentId, setRegisteredAgentId] = useState<bigint | null>(null);
   const [registeredDID, setRegisteredDID] = useState<string | null>(null);
-  
-  // Step 2: Set URI
-  const [isSettingUri, setIsSettingUri] = useState(false);
-  const [uriSetSuccess, setUriSetSuccess] = useState(false);
 
   const { writeContract, data: hash, isPending, error: writeError } = useWriteContract();
 
@@ -83,7 +78,6 @@ export function ContractInteraction() {
       setError(null);
       setRegisteredAgentId(null);
       setRegisteredDID(null);
-      setUriSetSuccess(false);
 
       console.log('🚀 发起注册交易 (无参数):', {
         address: CONTRACT_ADDRESS,
@@ -105,50 +99,6 @@ export function ContractInteraction() {
     } catch (err: any) {
       console.error('❌ 注册失败:', err);
       setError(err.message || '注册失败');
-    }
-  };
-
-  const handleSetUri = async () => {
-    if (!isConnected) {
-      setError('请先连接钱包');
-      return;
-    }
-
-    if (!registeredAgentId) {
-      setError('请先注册 Agent');
-      return;
-    }
-
-    if (!tokenUri.trim()) {
-      setError('请输入 Token URI');
-      return;
-    }
-
-    try {
-      setIsSettingUri(true);
-      setError(null);
-      setUriSetSuccess(false);
-
-      console.log('🚀 设置 Agent URI:', {
-        agentId: registeredAgentId.toString(),
-        tokenUri: tokenUri,
-      });
-
-      await writeContract({
-        address: CONTRACT_ADDRESS as `0x${string}`,
-        abi: CONTRACT_ABI,
-        functionName: 'setAgentUri',
-        args: [registeredAgentId, tokenUri],
-        chainId: CONTRACT_CHAIN_ID,
-      });
-
-      console.log('✅ 设置 URI 交易已提交');
-      setUriSetSuccess(true);
-    } catch (err: any) {
-      console.error('❌ 设置 URI 失败:', err);
-      setError(err.message || '设置 URI 失败');
-    } finally {
-      setIsSettingUri(false);
     }
   };
 
@@ -277,72 +227,12 @@ export function ContractInteraction() {
         )}
       </div>
 
-      {/* Set Token URI */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Set Token URI
-        </h3>
-
-        <div className="space-y-4">
-          {!registeredAgentId && (
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
-              <p className="text-sm text-yellow-800 dark:text-yellow-400">
-                Please register an Agent first
-              </p>
-            </div>
-          )}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Token URI
-            </label>
-            <input
-              type="text"
-              value={tokenUri}
-              onChange={(e) => setTokenUri(e.target.value)}
-              placeholder="https://example.com/metadata.json"
-              disabled={!registeredAgentId}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-            />
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Enter the metadata URI for the token
-            </p>
-          </div>
-
-          <button
-            onClick={handleSetUri}
-            disabled={!registeredAgentId || !tokenUri.trim() || isSettingUri || uriSetSuccess}
-            className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
-          >
-            {isSettingUri 
-              ? 'Setting URI...' 
-              : uriSetSuccess 
-              ? 'URI Set ✓' 
-              : 'Set Token URI'}
-          </button>
-
-          {/* URI Set Success */}
-          {uriSetSuccess && (
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
-              <p className="text-sm text-green-700 dark:text-green-400 font-medium">
-                ✅ Token URI Set Successfully!
-              </p>
-              <p className="text-xs text-green-600 dark:text-green-500 mt-1">
-                All operations completed
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Reset Button */}
-      {(registeredAgentId || uriSetSuccess) && (
+      {registeredAgentId && (
         <button
           onClick={() => {
             setRegisteredAgentId(null);
             setRegisteredDID(null);
-            setTokenUri('');
-            setUriSetSuccess(false);
             setError(null);
           }}
           className="w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
@@ -354,4 +244,3 @@ export function ContractInteraction() {
     </div>
   );
 }
-

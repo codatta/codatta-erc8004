@@ -5,6 +5,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { CONTRACT_ADDRESS, CONTRACT_CHAIN_ID } from '@/lib/contract-config';
 import { JsonUploader } from '@/components/JsonUploader';
 import { ContractInteraction } from '@/components/ContractInteraction';
+import { SetAgentUri } from '@/components/SetAgentUri';
 import { DidDocumentViewer } from '@/components/DidDocumentViewer';
 import { AgentDocumentViewer } from '@/components/AgentDocumentViewer';
 import { TokenUriQuery } from '@/components/TokenUriQuery';
@@ -124,7 +125,33 @@ export default function Home() {
                   <ContractInteraction />
                 </div>
 
-                {/* Set Metadata */}
+                {/* Set Token URI */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                        />
+                      </svg>
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                      Set Token URI
+                    </h2>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">
+                    Set agent token URI
+                  </p>
+                  <SetAgentUri />
+                </div>
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center">
