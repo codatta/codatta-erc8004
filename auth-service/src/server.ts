@@ -13,7 +13,7 @@ import { isAddress, type Hex } from 'viem';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3003;
+const PORT = parseInt(process.env.PORT || '3003', 10);
 
 // 验证环境变量
 if (!process.env.AGENT_OWNER_PRIVATE_KEY) {
@@ -171,20 +171,20 @@ app.get('/api/signer', (req: Request, res: Response) => {
 });
 
 // 启动服务
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log('='.repeat(50));
   console.log('🚀 Feedback Authorization Service');
   console.log('='.repeat(50));
-  console.log(`📡 Server: http://localhost:${PORT}`);
+  console.log(`📡 Server: http://0.0.0.0:${PORT}`);
   console.log(`🔑 Signer: ${authGenerator.getSignerAddress()}`);
   console.log(`🔗 Chain ID: ${process.env.CHAIN_ID || 2368}`);
   console.log(`📝 Registry: ${process.env.IDENTITY_REGISTRY_ADDRESS}`);
   console.log('='.repeat(50));
   console.log('');
   console.log('📚 API Endpoints:');
-  console.log(`  POST http://localhost:${PORT}/api/request-auth`);
-  console.log(`  GET  http://localhost:${PORT}/health`);
-  console.log(`  GET  http://localhost:${PORT}/api/signer`);
+  console.log(`  POST http://0.0.0.0:${PORT}/api/request-auth`);
+  console.log(`  GET  http://0.0.0.0:${PORT}/health`);
+  console.log(`  GET  http://0.0.0.0:${PORT}/api/signer`);
   console.log('');
 });
 
