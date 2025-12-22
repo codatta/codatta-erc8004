@@ -188,11 +188,7 @@ export function ContractInteraction() {
                     onClick={() => {
                       const text = registeredDID;
                       if (navigator.clipboard && window.isSecureContext) {
-                        navigator.clipboard.writeText(text).then(() => {
-                          alert('Copied to clipboard!');
-                        }).catch(() => {
-                          fallbackCopy(text);
-                        });
+                        navigator.clipboard.writeText(text);
                       } else {
                         fallbackCopy(text);
                       }
@@ -206,9 +202,8 @@ export function ContractInteraction() {
                         textArea.select();
                         try {
                           document.execCommand('copy');
-                          alert('Copied to clipboard!');
                         } catch (err) {
-                          alert('Copy failed. Please copy manually.');
+                          console.error('Copy failed:', err);
                         }
                         document.body.removeChild(textArea);
                       }

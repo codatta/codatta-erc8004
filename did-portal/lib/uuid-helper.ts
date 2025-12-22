@@ -50,3 +50,43 @@ export function formatAgentDID(agentId: bigint): string {
   return `did:codatta:${uuid}`;
 }
 
+/**
+ * 从 DID 字符串提取 UUID
+ * @param did - DID 字符串 (did:codatta:<UUID>)
+ * @returns UUID 字符串
+ */
+export function extractUUIDFromDID(did: string): string {
+  const match = did.match(/^did:codatta:(.+)$/);
+  if (!match) throw new Error(`Invalid DID format: ${did}`);
+  return match[1];
+}
+
+/**
+ * 将 UUID 转换回 bigint (agent id)
+ * @param uuid - UUID v4 字符串
+ * @returns Agent ID (bigint)
+ */
+export function uuidToBigInt(uuid: string): bigint {
+  // 移除 UUID 中的破折号
+  const hex = uuid.replace(/-/g, '');
+  if (hex.length !== 32) throw new Error(`Invalid UUID format: ${uuid}`);
+  
+  // 转换为 bigint
+  let value = BigInt(0);
+  for (let i = 0; i < 16; i++) {
+    const byte = BigInt(`0x${hex.slice(i * 2, i * 2 + 2)}`);
+    value = (value << BigInt(8)) | byte;
+  }
+  
+  return value;
+}
+
+/**
+ * 从 DID 字符串直接转换为 agent id
+ * @param did - DID 字符串 (did:codatta:<UUID>)
+ * @returns Agent ID (bigint)
+ */
+export function didToAgentId(did: string): bigint {
+  const uuid = extractUUIDFromDID(did);
+  return uuidToBigInt(uuid);
+}

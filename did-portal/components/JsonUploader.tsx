@@ -18,7 +18,7 @@ export function JsonUploader() {
   
   // Common state
   const [uploading, setUploading] = useState(false);
-  const [uploadResult, setUploadResult] = useState<string | null>(null);
+  const [uploadResult, setUploadResult] = useState<{ didUrl: string; agentUrl: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Handle DID document drop
@@ -200,7 +200,10 @@ export function JsonUploader() {
       const didS3Url = didResponse.data.s3Url || 'N/A';
       const agentS3Url = agentResponse.data.s3Url || 'N/A';
       
-      setUploadResult(`✅ Upload successful!\n\nDID Document S3 URL:\n${didS3Url}\n\nAgent Document S3 URL:\n${agentS3Url}`);
+      setUploadResult({
+        didUrl: didS3Url,
+        agentUrl: agentS3Url
+      });
     } catch (err: any) {
       console.error('❌ Upload failed:', err);
       setError(err.response?.data?.message || err.message || 'Upload failed');
@@ -381,7 +384,7 @@ export function JsonUploader() {
       {/* Success Message with S3 URLs */}
       {uploadResult && (
         <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 space-y-3">
-          <p className="text-sm font-semibold text-green-700 dark:text-green-400">✅ {uploadResult.split('\n')[0]}</p>
+          <p className="text-sm font-semibold text-green-700 dark:text-green-400">✅ Upload successful!</p>
           
           <div className="space-y-3">
             {/* DID URL */}
@@ -390,17 +393,14 @@ export function JsonUploader() {
               <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  value={uploadResult.split('\n')[2] || ''}
+                  value={uploadResult.didUrl}
                   readOnly
                   className="flex-1 px-2 py-1 text-xs bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded font-mono text-gray-700 dark:text-gray-300"
                 />
                 <button
                   onClick={() => {
-                    const url = uploadResult.split('\n')[2] || '';
                     if (navigator.clipboard && window.isSecureContext) {
-                      navigator.clipboard.writeText(url).then(() => {
-                        alert('Copied!');
-                      });
+                      navigator.clipboard.writeText(uploadResult.didUrl);
                     }
                   }}
                   className="px-2 py-1 text-xs bg-green-500 hover:bg-green-600 text-white rounded"
@@ -416,17 +416,14 @@ export function JsonUploader() {
               <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  value={uploadResult.split('\n')[4] || ''}
+                  value={uploadResult.agentUrl}
                   readOnly
                   className="flex-1 px-2 py-1 text-xs bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded font-mono text-gray-700 dark:text-gray-300"
                 />
                 <button
                   onClick={() => {
-                    const url = uploadResult.split('\n')[4] || '';
                     if (navigator.clipboard && window.isSecureContext) {
-                      navigator.clipboard.writeText(url).then(() => {
-                        alert('Copied!');
-                      });
+                      navigator.clipboard.writeText(uploadResult.agentUrl);
                     }
                   }}
                   className="px-2 py-1 text-xs bg-green-500 hover:bg-green-600 text-white rounded"

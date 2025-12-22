@@ -3,28 +3,33 @@
 import { useState } from 'react';
 import { useWriteContract } from 'wagmi';
 import { CONTRACT_ADDRESS, CONTRACT_ABI, CONTRACT_CHAIN_ID } from '@/lib/contract-config';
-import { hexToString, stringToHex } from 'viem';
+import { stringToHex } from 'viem';
+import { didToAgentId } from '@/lib/uuid-helper';
 
 export function SetMetadata() {
-  const [agentId, setAgentId] = useState('');
+  const [didInput, setDidInput] = useState('');
   const [metadataUrl, setMetadataUrl] = useState('');
   const [txHash, setTxHash] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  const { writeContractAsync, isPending, error } = useWriteContract();
+  const { writeContractAsync, isPending, error: contractError } = useWriteContract();
 
   const handleSetMetadata = async () => {
-    if (!agentId || !metadataUrl) return;
+    if (!didInput.trim() || !metadataUrl.trim()) return;
 
     try {
+      setError(null);
       setTxHash('');
       setSuccessMessage('');
+
+      const agentId = didToAgentId(didInput);
 
       const hash = await writeContractAsync({
         address: CONTRACT_ADDRESS as `0x${string}`,
         abi: CONTRACT_ABI,
         functionName: 'setMetadata',
-        args: [BigInt(agentId), 'document', stringToHex(metadataUrl)] as const,
+        args: [agentId, 'document', stringToHex(metadataUrl)] as const,
         chainId: CONTRACT_CHAIN_ID,
       });
 
@@ -33,13 +38,14 @@ export function SetMetadata() {
       
       // Clear inputs after success
       setTimeout(() => {
-        setAgentId('');
+        setDidInput('');
         setMetadataUrl('');
         setTxHash('');
         setSuccessMessage('');
       }, 3000);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error setting metadata:', err);
+      setError(err.message || 'Failed to set metadata');
     }
   };
 
@@ -47,17 +53,17 @@ export function SetMetadata() {
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Agent ID
+          Agent DID
         </label>
         <input
-          type="number"
-          value={agentId}
-          onChange={(e) => setAgentId(e.target.value)}
-          placeholder="Enter agent ID"
+          type="text"
+          value={didInput}
+          onChange={(e) => setDidInput(e.target.value)}
+          placeholder="did:codatta:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
         />
         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          The agent ID to set metadata for
+          The agent DID to set metadata for
         </p>
       </div>
 
@@ -79,19 +85,19 @@ export function SetMetadata() {
 
       <button
         onClick={handleSetMetadata}
-        disabled={!agentId || !metadataUrl || isPending}
+        disabled={!didInput.trim() || !metadataUrl.trim() || isPending}
         className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
       >
         {isPending ? 'Setting Metadata...' : 'Set Metadata'}
       </button>
 
-      {error && (
+      {(error || contractError) && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
           <p className="text-sm text-red-600 dark:text-red-400 font-semibold mb-1">
             ❌ Error
           </p>
           <p className="text-xs text-red-600 dark:text-red-400 break-all">
-            {error.message}
+            {error || contractError?.message}
           </p>
         </div>
       )}
