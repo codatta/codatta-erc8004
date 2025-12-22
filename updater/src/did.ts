@@ -21,8 +21,10 @@ export class DID {
 
   async pushDidDocument(did: string): Promise<string> {
     // filepath：<did>.json
-    const filePath = path.join(config.get("did.localDir"), `${did}.json`);
-    const s3Key = path.join(config.get("did.s3.root"), `${did}.json`);
+    const filePath = path.join(config.get("did.localDir") as string, `${did}.json`);
+    const s3Key = path.join(config.get("did.s3.root") as string, `${did}.json`);
+    const bucket = config.get("did.s3.bucket") as string;
+    const region = config.get("s3.region") as string;
 
     // read file
     if (!fs.existsSync(filePath)) {
@@ -33,18 +35,25 @@ export class DID {
 
     // upload to S3
     console.log(`[DID] Uploading to S3: ${s3Key}`);
-    await S3.getInstance().uploadToS3(config.get("did.s3.bucket"), s3Key, data);
+    await S3.getInstance().uploadToS3(bucket, s3Key, data);
     console.log(`[DID] Upload complete: ${s3Key}`);
 
-    // Return S3 URL
-    const s3Url = `s3://${config.get("did.s3.bucket")}/${s3Key}`;
-    return s3Url;
+    // Return HTTPS URL (AWS S3 format)
+    // Format: https://bucket.s3.region.amazonaws.com/key or https://bucket.s3.amazonaws.com/key (for us-east-1)
+    const encodedKey = encodeURIComponent(s3Key);
+    const httpsUrl = region === 'us-east-1' 
+      ? `https://${bucket}.s3.amazonaws.com/${encodedKey}`
+      : `https://${bucket}.s3.${region}.amazonaws.com/${encodedKey}`;
+    
+    return httpsUrl;
   }
 
   async pushAgentDocument(did: string): Promise<string> {
     // filepath：<did>.json
-    const filePath = path.join(config.get("agent.localDir"), `${did}.json`);
-    const s3Key = path.join(config.get("agent.s3.root"), `${did}.json`);
+    const filePath = path.join(config.get("agent.localDir") as string, `${did}.json`);
+    const s3Key = path.join(config.get("agent.s3.root") as string, `${did}.json`);
+    const bucket = config.get("agent.s3.bucket") as string;
+    const region = config.get("s3.region") as string;
 
     // read file
     if (!fs.existsSync(filePath)) {
@@ -55,11 +64,16 @@ export class DID {
 
     // upload to S3
     console.log(`[Agent] Uploading to S3: ${s3Key}`);
-    await S3.getInstance().uploadToS3(config.get("agent.s3.bucket"), s3Key, data);
+    await S3.getInstance().uploadToS3(bucket, s3Key, data);
     console.log(`[Agent] Upload complete: ${s3Key}`);
 
-    // Return S3 URL
-    const s3Url = `s3://${config.get("agent.s3.bucket")}/${s3Key}`;
-    return s3Url;
+    // Return HTTPS URL (AWS S3 format)
+    // Format: https://bucket.s3.region.amazonaws.com/key or https://bucket.s3.amazonaws.com/key (for us-east-1)
+    const encodedKey = encodeURIComponent(s3Key);
+    const httpsUrl = region === 'us-east-1' 
+      ? `https://${bucket}.s3.amazonaws.com/${encodedKey}`
+      : `https://${bucket}.s3.${region}.amazonaws.com/${encodedKey}`;
+    
+    return httpsUrl;
   }
 }
