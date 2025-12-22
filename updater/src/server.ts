@@ -59,13 +59,14 @@ app.put("/document/:id", async (req: Request, res: Response) => {
   const savePath = path.join(config.get("did.localDir"), `${did}.json`);
   fs.writeFileSync(savePath, JSON.stringify(doc, null, 2));
   
-  // push to S3
-  await DID.getInstance().pushDidDocument(did);
+  // push to S3 and get URL
+  const s3Url = await DID.getInstance().pushDidDocument(did);
 
   return res.json({
     success: true,
     message: "DID Document uploaded",
     file: savePath,
+    s3Url: s3Url,
   });
 });
 
@@ -100,13 +101,14 @@ app.put("/agent/:id", async (req: Request, res: Response) => {
   const savePath = path.join(config.get("agent.localDir"), `${did}.json`);
   fs.writeFileSync(savePath, JSON.stringify(doc, null, 2));
   
-  // push to S3 (using agent config)
-  await DID.getInstance().pushAgentDocument(did);
+  // push to S3 (using agent config) and get URL
+  const s3Url = await DID.getInstance().pushAgentDocument(did);
 
   return res.json({
     success: true,
     message: "Agent Document uploaded",
     file: savePath,
+    s3Url: s3Url,
   });
 });
 

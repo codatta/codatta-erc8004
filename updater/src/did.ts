@@ -19,7 +19,7 @@ export class DID {
     return DID._instance;
   }
 
-  async pushDidDocument(did: string) {
+  async pushDidDocument(did: string): Promise<string> {
     // filepath：<did>.json
     const filePath = path.join(config.get("did.localDir"), `${did}.json`);
     const s3Key = path.join(config.get("did.s3.root"), `${did}.json`);
@@ -27,7 +27,7 @@ export class DID {
     // read file
     if (!fs.existsSync(filePath)) {
         console.log(`[DID] file not exist: ${filePath}`);
-        return;
+        throw new Error(`File not found: ${filePath}`);
     }
     const data = fs.readFileSync(filePath, "utf8");
 
@@ -35,9 +35,13 @@ export class DID {
     console.log(`[DID] Uploading to S3: ${s3Key}`);
     await S3.getInstance().uploadToS3(config.get("did.s3.bucket"), s3Key, data);
     console.log(`[DID] Upload complete: ${s3Key}`);
+
+    // Return S3 URL
+    const s3Url = `s3://${config.get("did.s3.bucket")}/${s3Key}`;
+    return s3Url;
   }
 
-  async pushAgentDocument(did: string) {
+  async pushAgentDocument(did: string): Promise<string> {
     // filepath：<did>.json
     const filePath = path.join(config.get("agent.localDir"), `${did}.json`);
     const s3Key = path.join(config.get("agent.s3.root"), `${did}.json`);
@@ -45,7 +49,7 @@ export class DID {
     // read file
     if (!fs.existsSync(filePath)) {
         console.log(`[Agent] file not exist: ${filePath}`);
-        return;
+        throw new Error(`File not found: ${filePath}`);
     }
     const data = fs.readFileSync(filePath, "utf8");
 
@@ -53,5 +57,9 @@ export class DID {
     console.log(`[Agent] Uploading to S3: ${s3Key}`);
     await S3.getInstance().uploadToS3(config.get("agent.s3.bucket"), s3Key, data);
     console.log(`[Agent] Upload complete: ${s3Key}`);
+
+    // Return S3 URL
+    const s3Url = `s3://${config.get("agent.s3.bucket")}/${s3Key}`;
+    return s3Url;
   }
 }
