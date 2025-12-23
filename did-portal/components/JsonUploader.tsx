@@ -399,8 +399,25 @@ export function JsonUploader() {
                 />
                 <button
                   onClick={() => {
+                    const text = uploadResult.didUrl;
                     if (navigator.clipboard && window.isSecureContext) {
-                      navigator.clipboard.writeText(uploadResult.didUrl);
+                      navigator.clipboard.writeText(text);
+                    } else {
+                      function fallbackCopy(text: string) {
+                        const textArea = document.createElement("textarea");
+                        textArea.value = text;
+                        textArea.style.position = "fixed";
+                        textArea.style.left = "-999999px";
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                          document.execCommand('copy');
+                        } catch (err) {
+                          console.error('Copy failed:', err);
+                        }
+                        document.body.removeChild(textArea);
+                      }
+                      fallbackCopy(text);
                     }
                   }}
                   className="px-2 py-1 text-xs bg-green-500 hover:bg-green-600 text-white rounded"
@@ -422,8 +439,25 @@ export function JsonUploader() {
                 />
                 <button
                   onClick={() => {
+                    const text = uploadResult.agentUrl;
                     if (navigator.clipboard && window.isSecureContext) {
-                      navigator.clipboard.writeText(uploadResult.agentUrl);
+                      navigator.clipboard.writeText(text);
+                    } else {
+                      function fallbackCopy(text: string) {
+                        const textArea = document.createElement("textarea");
+                        textArea.value = text;
+                        textArea.style.position = "fixed";
+                        textArea.style.left = "-999999px";
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                          document.execCommand('copy');
+                        } catch (err) {
+                          console.error('Copy failed:', err);
+                        }
+                        document.body.removeChild(textArea);
+                      }
+                      fallbackCopy(text);
                     }
                   }}
                   className="px-2 py-1 text-xs bg-green-500 hover:bg-green-600 text-white rounded"
