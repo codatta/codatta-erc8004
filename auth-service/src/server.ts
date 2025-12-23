@@ -30,15 +30,22 @@ const authGenerator = new AuthGenerator(
   process.env.IDENTITY_REGISTRY_ADDRESS as `0x${string}`
 );
 
-// 中间件
+// CORS 配置 - 支持所有跨域请求
+const corsOrigins = process.env.CORS_ORIGINS?.split(',').map(o => o.trim()) || ['*'];
+const corsOptions = {
+  origin: corsOrigins.includes('*') ? '*' : corsOrigins,
+  credentials: corsOrigins.includes('*') ? false : true,
+  methods: ['GET', 'POST', 'OPTIONS', 'HEAD'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400, // 24 小时
+};
+
+// 中间件 - 顺序很重要
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// CORS 配置
-const corsOrigins = process.env.CORS_ORIGINS?.split(',') || ['http://localhost:3000'];
-app.use(cors({
-  origin: corsOrigins,
-  credentials: true,
-}));
+// 允许 OPTIONS 预检请求
+app.options('*', cors(corsOptions));
 
 // 请求日志中间件
 app.use((req, res, next) => {
@@ -179,6 +186,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🔑 Signer: ${authGenerator.getSignerAddress()}`);
   console.log(`🔗 Chain ID: ${process.env.CHAIN_ID || 2368}`);
   console.log(`📝 Registry: ${process.env.IDENTITY_REGISTRY_ADDRESS}`);
+  console.log(`🌐 CORS Origins: ${corsOrigins.includes('*') ? 'All Origins (*)' : corsOrigins.join(', ')}`);
   console.log('='.repeat(50));
   console.log('');
   console.log('📚 API Endpoints:');
