@@ -4,39 +4,44 @@ import { useState } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { REPUTATION_CONTRACT_ADDRESS, REPUTATION_ABI, CONTRACT_CHAIN_ID } from '@/lib/contract-config';
 import { stringToHex, padHex } from 'viem';
+import { didToAgentId } from '@/lib/uuid-helper';
 import { useFeedbackAuth } from '@/lib/use-feedback-auth';
 import { generateFeedbackHash } from '@/lib/feedback-auth';
 
 export function FeedbackGiverWithAuth() {
   const { address, isConnected } = useAccount();
-  const [agentId, setAgentId] = useState('');
+  const [didInput, setDidInput] = useState('');
   const [score, setScore] = useState('');
   const [tag1, setTag1] = useState('');
   const [tag2, setTag2] = useState('');
   const [feedbackUri, setFeedbackUri] = useState('');
+  const [error, setError] = useState<string | null>(null);
   
   const { data: hash, writeContract, isPending, error: writeError } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
   const { requestAuth, loading: authLoading, error: authError } = useFeedbackAuth();
 
   const handleGiveFeedback = async () => {
-    if (!agentId || !score) {
-      alert('Please enter Agent ID and Score');
+    if (!didInput.trim() || !score) {
+      setError('Please enter Agent DID and Score');
       return;
     }
 
     if (!address) {
-      alert('Please connect your wallet first');
+      setError('Please connect your wallet first');
       return;
     }
 
     const scoreNum = parseInt(score);
     if (scoreNum < 0 || scoreNum > 100) {
-      alert('Score must be between 0 and 100');
+      setError('Score must be between 0 and 100');
       return;
     }
 
     try {
+      setError(null);
+      const agentId = didToAgentId(didInput);
+
       const emptyBytes32 = '0x0000000000000000000000000000000000000000000000000000000000000000' as `0x${string}`;
       const tag1Bytes = tag1 ? padHex(stringToHex(tag1), { size: 32 }) : emptyBytes32;
       const tag2Bytes = tag2 ? padHex(stringToHex(tag2), { size: 32 }) : emptyBytes32;
@@ -44,7 +49,7 @@ export function FeedbackGiverWithAuth() {
       // 1. 请求授权签名
       console.log('📝 Requesting feedbackAuth...');
       const feedbackAuth = await requestAuth({
-        agentId,
+        agentId: agentId.toString(),
         clientAddress: address,
         indexLimit: 10,
         expiryDays: 30,
@@ -75,7 +80,7 @@ export function FeedbackGiverWithAuth() {
         abi: REPUTATION_ABI,
         functionName: 'giveFeedback',
         args: [
-          BigInt(agentId),
+          agentId,
           scoreNum,
           tag1Bytes,
           tag2Bytes,
@@ -88,16 +93,17 @@ export function FeedbackGiverWithAuth() {
 
     } catch (err: any) {
       console.error('Error giving feedback:', err);
-      alert(`Error: ${err.message}`);
+      setError(err.message || 'Failed to give feedback');
     }
   };
 
   const handleClear = () => {
-    setAgentId('');
+    setDidInput('');
     setScore('');
     setTag1('');
     setTag2('');
     setFeedbackUri('');
+    setError(null);
   };
 
   const isProcessing = authLoading || isPending || isConfirming;
@@ -115,13 +121,16 @@ export function FeedbackGiverWithAuth() {
           <div className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Agent ID *
+                Agent DID *
               </label>
               <input
-                type="number"
-                value={agentId}
-                onChange={(e) => setAgentId(e.target.value)}
-                placeholder="Enter Agent ID"
+                type="text"
+                value={didInput}
+                onChange={(e) => {
+                  setDidInput(e.target.value);
+                  setError(null);
+                }}
+                placeholder="did:codatta:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                 disabled={isProcessing}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white disabled:opacity-50"
               />
@@ -190,7 +199,7 @@ export function FeedbackGiverWithAuth() {
 
           <button
             onClick={handleGiveFeedback}
-            disabled={!agentId || !score || isProcessing}
+            disabled={!didInput.trim() || !score || isProcessing}
             className="w-full py-2 px-4 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
           >
             {authLoading ? '🔐 Requesting Authorization...' : 
@@ -199,7 +208,7 @@ export function FeedbackGiverWithAuth() {
              'Give Feedback'}
           </button>
 
-          {(agentId || score || tag1 || tag2 || feedbackUri) && (
+          {(didInput || score || tag1 || tag2 || feedbackUri) && (
             <button
               onClick={handleClear}
               disabled={isProcessing}
@@ -207,6 +216,17 @@ export function FeedbackGiverWithAuth() {
             >
               Clear
             </button>
+          )}
+
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+              <p className="text-sm font-semibold text-red-700 dark:text-red-400 mb-1">
+                Error:
+              </p>
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {error}
+              </p>
+            </div>
           )}
 
           {authError && (

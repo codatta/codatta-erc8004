@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi';
 import { VALIDATION_CONTRACT_ADDRESS, VALIDATION_ABI, CONTRACT_CHAIN_ID } from '@/lib/contract-config';
 import { keccak256, toHex, isAddress } from 'viem';
+import { didToAgentId } from '@/lib/uuid-helper';
 import { kiteAITestnet } from '@/lib/wagmi';
 
 export function ValidationRequestForm() {
@@ -11,7 +12,7 @@ export function ValidationRequestForm() {
   const { switchChain } = useSwitchChain();
 
   const [validatorAddress, setValidatorAddress] = useState('');
-  const [agentId, setAgentId] = useState('');
+  const [didInput, setDidInput] = useState('');
   const [requestUri, setRequestUri] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -55,8 +56,8 @@ export function ValidationRequestForm() {
       setFormError('Invalid validator address.');
       return;
     }
-    if (!agentId) {
-      setFormError('Agent ID is required.');
+    if (!didInput.trim()) {
+      setFormError('Agent DID is required.');
       return;
     }
     if (!requestUri) {
@@ -67,6 +68,7 @@ export function ValidationRequestForm() {
     setFormError(null);
 
     try {
+      const agentId = didToAgentId(didInput);
       // Generate requestHash from requestUri
       const requestHash = keccak256(toHex(requestUri));
 
@@ -76,7 +78,7 @@ export function ValidationRequestForm() {
         functionName: 'validationRequest',
         args: [
           validatorAddress as `0x${string}`,
-          BigInt(agentId),
+          agentId,
           requestUri,
           requestHash,
         ],
@@ -90,12 +92,12 @@ export function ValidationRequestForm() {
 
   const handleClear = () => {
     setValidatorAddress('');
-    setAgentId('');
+    setDidInput('');
     setRequestUri('');
     setFormError(null);
   };
 
-  const isButtonDisabled = isWritePending || isConfirming || !isConnected || !validatorAddress || !agentId || !requestUri || chainId !== CONTRACT_CHAIN_ID;
+  const isButtonDisabled = isWritePending || isConfirming || !isConnected || !validatorAddress || !didInput.trim() || !requestUri || chainId !== CONTRACT_CHAIN_ID;
 
   return (
     <div className="space-y-4">
@@ -123,13 +125,13 @@ export function ValidationRequestForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Agent ID *
+                Agent DID *
               </label>
               <input
-                type="number"
-                value={agentId}
-                onChange={(e) => setAgentId(e.target.value)}
-                placeholder="Enter Agent ID"
+                type="text"
+                value={didInput}
+                onChange={(e) => setDidInput(e.target.value)}
+                placeholder="did:codatta:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               />
             </div>

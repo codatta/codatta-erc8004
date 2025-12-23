@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useReadContract } from 'wagmi';
 import { VALIDATION_CONTRACT_ADDRESS, VALIDATION_ABI } from '@/lib/contract-config';
+import { didToAgentId } from '@/lib/uuid-helper';
 import { isAddress, type Hex } from 'viem';
 
 export function ValidationQueries() {
@@ -161,29 +162,35 @@ function ValidationStatusQuery() {
 
 // Get Summary
 function SummaryQuery() {
-  const [agentId, setAgentId] = useState('');
+  const [didInput, setDidInput] = useState('');
   const [validatorAddresses, setValidatorAddresses] = useState('');
   const [tag, setTag] = useState('');
   const [shouldRead, setShouldRead] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const agentId = didInput ? didToAgentId(didInput) : undefined;
 
   const { data, error: readError, isFetching } = useReadContract({
     address: VALIDATION_CONTRACT_ADDRESS as `0x${string}`,
     abi: VALIDATION_ABI,
     functionName: 'getSummary',
     args: agentId ? [
-      BigInt(agentId),
+      agentId,
       validatorAddresses ? validatorAddresses.split(',').map(a => a.trim() as `0x${string}`) : [],
       tag ? tag as Hex : '0x0000000000000000000000000000000000000000000000000000000000000000' as Hex,
     ] : undefined,
     query: {
-      enabled: shouldRead && agentId.length > 0,
+      enabled: shouldRead && agentId !== undefined,
     },
   });
 
   const handleQuery = () => {
-    if (!agentId.trim()) {
-      setError('Please enter an Agent ID');
+    if (!didInput.trim()) {
+      setError('Please enter an Agent DID');
+      return;
+    }
+    if (!agentId) {
+      setError('Invalid Agent DID format');
       return;
     }
     setShouldRead(true);
@@ -191,7 +198,7 @@ function SummaryQuery() {
   };
 
   const handleClear = () => {
-    setAgentId('');
+    setDidInput('');
     setValidatorAddresses('');
     setTag('');
     setShouldRead(false);
@@ -204,16 +211,17 @@ function SummaryQuery() {
     <div className="space-y-3">
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Agent ID *
+          Agent DID *
         </label>
         <input
-          type="number"
-          value={agentId}
+          type="text"
+          value={didInput}
           onChange={(e) => {
-            setAgentId(e.target.value);
+            setDidInput(e.target.value);
             setShouldRead(false);
+            setError(null);
           }}
-          placeholder="Enter Agent ID"
+          placeholder="did:codatta:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         />
       </div>
@@ -253,7 +261,7 @@ function SummaryQuery() {
       <div className="flex gap-2">
         <button
           onClick={handleQuery}
-          disabled={isFetching || !agentId}
+          disabled={isFetching || !didInput.trim() || !agentId}
           className="flex-1 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isFetching ? 'Querying...' : 'Query Summary'}
@@ -291,23 +299,29 @@ function SummaryQuery() {
 
 // Get Agent Validations
 function AgentValidationsQuery() {
-  const [agentId, setAgentId] = useState('');
+  const [didInput, setDidInput] = useState('');
   const [shouldRead, setShouldRead] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const agentId = didInput ? didToAgentId(didInput) : undefined;
 
   const { data, error: readError, isFetching } = useReadContract({
     address: VALIDATION_CONTRACT_ADDRESS as `0x${string}`,
     abi: VALIDATION_ABI,
     functionName: 'getAgentValidations',
-    args: agentId ? [BigInt(agentId)] : undefined,
+    args: agentId ? [agentId] : undefined,
     query: {
-      enabled: shouldRead && agentId.length > 0,
+      enabled: shouldRead && agentId !== undefined,
     },
   });
 
   const handleQuery = () => {
-    if (!agentId.trim()) {
-      setError('Please enter an Agent ID');
+    if (!didInput.trim()) {
+      setError('Please enter an Agent DID');
+      return;
+    }
+    if (!agentId) {
+      setError('Invalid Agent DID format');
       return;
     }
     setShouldRead(true);
@@ -315,7 +329,7 @@ function AgentValidationsQuery() {
   };
 
   const handleClear = () => {
-    setAgentId('');
+    setDidInput('');
     setShouldRead(false);
     setError(null);
   };
@@ -326,16 +340,17 @@ function AgentValidationsQuery() {
     <div className="space-y-3">
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Agent ID
+          Agent DID
         </label>
         <input
-          type="number"
-          value={agentId}
+          type="text"
+          value={didInput}
           onChange={(e) => {
-            setAgentId(e.target.value);
+            setDidInput(e.target.value);
             setShouldRead(false);
+            setError(null);
           }}
-          placeholder="Enter Agent ID"
+          placeholder="did:codatta:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         />
       </div>
@@ -343,7 +358,7 @@ function AgentValidationsQuery() {
       <div className="flex gap-2">
         <button
           onClick={handleQuery}
-          disabled={isFetching || !agentId}
+          disabled={isFetching || !didInput.trim() || !agentId}
           className="flex-1 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isFetching ? 'Querying...' : 'Query Validations'}
@@ -486,4 +501,3 @@ function ValidatorRequestsQuery() {
     </div>
   );
 }
-
